@@ -1,0 +1,68 @@
+*TCP Server:*
+ 
+import socket
+ 
+def tcp_server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(('localhost', 12345))
+    server_socket.listen(1)
+    print("TCP server listening...")
+    
+    conn, addr = server_socket.accept()
+    print(f"Connection from {addr}")
+    
+    message = conn.recv(1024).decode()
+    print(f"Received: {message}")
+    
+    conn.sendall(b"Message received")
+    conn.close()
+ 
+tcp_server()
+ 
+*TCP Client:*
+ 
+import socket
+ 
+def tcp_client():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('localhost', 12345))
+    
+    client_socket.sendall(b"Hello, TCP server!")
+    response = client_socket.recv(1024).decode()
+    print(f"Response from server: {response}")
+    
+    client_socket.close()
+ 
+tcp_client()
+ 
+ 
+*UDP Server:*
+ 
+import socket
+ 
+def udp_server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_socket.bind(('localhost', 12345))
+    print("UDP server listening...")
+    
+    while True:
+        message, addr = server_socket.recvfrom(1024)
+        print(f"Received from {addr}: {message.decode()}")
+        server_socket.sendto(b"Message received", addr)
+ 
+udp_server()
+ 
+*UDP Client:*
+ 
+import socket
+ 
+def udp_client():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    client_socket.sendto(b"Hello, UDP server!", ('localhost', 12345))
+    response, _ = client_socket.recvfrom(1024)
+    print(f"Response from server: {response.decode()}")
+    
+    client_socket.close()
+ 
+udp_client()
